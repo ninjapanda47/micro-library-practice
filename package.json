@@ -1,0 +1,29 @@
+{
+  "name": "gau_sandi-interview-library",
+  "version": "1.0.0",
+  "description": "qvest assessment",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/onprem/gau_sandi-interview-library.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "sandi.c.gau@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/onprem/gau_sandi-interview-library/issues"
+  },
+  "homepage": "https://bitbucket.org/onprem/gau_sandi-interview-library#readme",
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
+  }
+}
