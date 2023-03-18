@@ -1,7 +1,7 @@
 {
   "name": "gau_sandi-interview-library",
-  "version": "1.0.0",
-  "description": "qvest assessment",
+  "version": "1.1.0",
+  "description": "Practice library for npm publish",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -11,17 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/onprem/gau_sandi-interview-library.git"
+    "url": "git+ssh://git@github.com:ninjapanda47/micro-library-practice.git"
   },
   "keywords": [
     "javascript"
   ],
   "author": "sandi.c.gau@gmail.com",
   "license": "ISC",
-  "bugs": {
-    "url": "https://bitbucket.org/onprem/gau_sandi-interview-library/issues"
-  },
-  "homepage": "https://bitbucket.org/onprem/gau_sandi-interview-library#readme",
+  "homepage": "https://github.com/ninjapanda47/micro-library-practice",
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0"
