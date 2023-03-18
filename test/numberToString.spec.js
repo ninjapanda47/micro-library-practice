@@ -4,6 +4,11 @@ const expect = require("chai").expect;
 const { numberToString } = require("../index");
 
 describe("Number to String Tests", () => {
+  it("should throw error when number is bigger than 999999999", async () => {
+    expect(() => numberToString("1000000000")).to.throw(
+        "999,999,999 is the limit"
+    );
+  });
   it("should be able to process a string", async () => {
     const result = numberToString("1");
     expect(result).to.equal("one");
@@ -114,5 +119,23 @@ describe("Number to String Tests", () => {
     expect(result).to.equal(
       "nine-hundred-ninety-nine-thousand-nine-hundred-ninety-nine"
     );
+  });
+  it("Converts 9999999 to nine-million-nine-hundred-ninety-nine-thousand-nine-hundred-ninety-nine", async () => {
+    const result = numberToString(9999999);
+    expect(result).to.equal(
+        "nine-million-nine-hundred-ninety-nine-thousand-nine-hundred-ninety-nine"
+    );
+  });
+  it("Converts 40000000 to forty-million", async () => {
+    const result = numberToString(40000000);
+    expect(result).to.equal("forty-million");
+  });
+  it("Converts 400000000 to four-hundred-million", async () => {
+    const result = numberToString(400000000);
+    expect(result).to.equal("four-hundred-million");
+  });
+  it("Converts 404000000 to four-hundred-four-million", async () => {
+    const result = numberToString(404000000);
+    expect(result).to.equal("four-hundred-four-million");
   });
 });

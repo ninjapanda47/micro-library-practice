@@ -1,8 +1,8 @@
 const numberToString = (number) => {
   let result = "";
   number = number.toString();
-  if (number.length > 6) {
-    return "Error: 999,999 is the limit";
+  if (number.length > 9) {
+    throw new Error("999,999,999 is the limit");
   }
   const single = {
     0: "zero",
@@ -39,137 +39,94 @@ const numberToString = (number) => {
     9: "ninety",
   };
 
-  const processTwoDigits = (i, number, result) => {
-    if (number[i] !== "0") {
-      // 10 - 90
-      if (number[i] !== "1" || (number[i] === "1" && number[i + 1] === "0")) {
-        if (i !== 0) {
-          return result.concat(`-${tens[number[i]]}`);
-        } else {
-          return tens[number[i]];
+  const processTwoDigits = (i, number) => {
+    if (number[i - 1] !== "0") {
+      if (
+          number[i - 1] !== "1" ||
+          (number[i - 1] === "1" && number[i] === "0")
+      ) {
+        if (number[i] !== "0") {
+          return `${tens[number[i - 1]]}-${single[number[i]]}`;
         }
-      } else if (number[i] === "1" && number[i + 1] !== "0") {
-        // 11 - 19
-        if (i !== 0) {
-          return result.concat(`-${teens[number[i + 1]]}`);
-        } else {
-          return teens[number[i + 1]];
-        }
-      }
-    }
-  };
-
-  const processSingleDigits = (i, number, result) => {
-    // the number before is 0 or 2-9
-    if ((number[i] !== "0" && number[i - 1] === "0") || number[i - 1] !== "1") {
-      return result.concat(`-${single[number[i]]}`);
-    }
-  };
-
-  const addHundred = (i, number, result) => {
-    if (
-      (number.length % 3 === 0 && (i === 0 || i === 3)) ||
-      (number.length === 5 && i === 2) ||
-      (number.length === 4 && i === 1 && number[i] !== "0")
-    )
-      return result.concat("-hundred");
-  };
-  const addThousand = (i, number, result) => {
-    if (
-      (number.length === 6 && i === 2) ||
-      (number.length === 5 && i === 1) ||
-      (number.length === 4 && i === 0)
-    )
-      return result.concat("-thousand");
-  };
-
-  for (let i = 0; i < number.length; i++) {
-    // single digit
-    if (number.length === 1) {
-      return single[number[i]];
-    }
-    // double digit
-    if (number.length === 2) {
-      if (number[1] === "0") {
-        return tens[number[0]];
-      }
-      if (number[0] === "1") {
-        return teens[number[1]];
+        return tens[number[i - 1]];
       } else {
-        return tens[number[0]].concat(`-${single[number[1]]}`);
+        return teens[number[i]];
       }
     }
-    // 3 or 6 digit
-    if (number.length % 3 === 0) {
-      if (i === 0 || i === 3) {
-        if (i === 0) {
-          result = single[number[i]];
+  };
+
+  if (number.length === 1) {
+    return single[number[0]];
+  }
+
+  const checkAndAdd = (result, currentString, number) => {
+    if (result) {
+      if (!result.includes("thousand") && number.length > 3) {
+        return currentString.concat(`-thousand-`).concat(result);
+      }
+      if (!result.includes("million") && number.length > 6) {
+        return currentString.concat(`-million-`).concat(result);
+      }
+      return result;
+    } else {
+      if (number.length > 6) {
+        return currentString.concat(`-million`);
+      }
+      if (number.length > 3) {
+        return currentString.concat(`-thousand`);
+      }
+      return currentString;
+    }
+  };
+  // work backwards 3 digits at a time approach
+  for (let i = number.length - 1; i >= 0; i--) {
+    let threeDigits;
+    let twoDigits;
+    let twoDigitsString = number[i - 1]
+        ? number.substring(i - 1, i + 1)
+        : undefined;
+    let threeDigitString = number[i - 2]
+        ? number.substring(i - 2, i + 1)
+        : undefined;
+    // if not 100
+    if (twoDigitsString !== "00") {
+      twoDigits = processTwoDigits(i, number);
+      if (number[i - 2]) {
+        if (twoDigits) {
+          threeDigits = `${single[number[i - 2]]}-hundred`.concat(
+              `-${twoDigits}`
+          );
         } else {
-          result = result.concat(`-${single[number[i]]}`);
+          threeDigits = `${single[number[i - 2]]}-hundred`.concat(
+              `-${single[number[i]]}`
+          );
         }
       }
-      if (i - 1 === 0 || i - 1 === 3) {
-        result = processTwoDigits(i, number, result)
-          ? processTwoDigits(i, number, result)
-          : result;
-      }
-      if ((i - 2 === 0 || i - 2 === 3) && number[i] !== "0") {
-        result = processSingleDigits(i, number, result)
-          ? processSingleDigits(i, number, result)
-          : result;
-      }
-    }
-    if (number.length === 4) {
-      if (i === 0) {
-        result = single[number[i]];
-      }
-      if (i === 1 && number[i] !== "0") {
-        result = result.concat(`-${single[number[i]]}`);
-      }
-      if (i === 2) {
-        result = processTwoDigits(i, number, result)
-          ? processTwoDigits(i, number, result)
-          : result;
-      }
-      if (i === 3 && number[i] !== "0") {
-        result = processSingleDigits(i, number, result)
-          ? processSingleDigits(i, number, result)
-          : result;
-      }
-    }
-    if (number.length === 5) {
-      if (i === 0) {
-        result = processTwoDigits(i, number, result)
-          ? processTwoDigits(i, number, result)
-          : result;
-      }
-      if (i === 1) {
-        if (number[i] !== "0" && number[0] !== "1") {
-          result = result.concat(`-${single[number[i]]}`);
-        }
-      }
-      if (i === 2) {
-        result = result.concat(`-${single[number[i]]}`);
-      }
-      if (i === 3) {
-        result = processTwoDigits(i, number, result)
-          ? processTwoDigits(i, number, result)
-          : result;
-      }
-      if (i === 4 && number[i] !== "0") {
-        result = processSingleDigits(i, number, result)
-          ? processSingleDigits(i, number, result)
-          : result;
+      // undefined for 00
+    } else {
+      if (threeDigitString !== "000") {
+        threeDigits = `${single[number[i - 2]]}-hundred`;
       }
     }
 
-    result = addHundred(i, number, result)
-      ? addHundred(i, number, result)
-      : result;
-
-    result = addThousand(i, number, result)
-      ? addThousand(i, number, result)
-      : result;
+    if (threeDigitString) {
+      if (!result) {
+        if (!number[i - 3]) {
+          result = checkAndAdd(result, threeDigits, number);
+        } else {
+          result = threeDigits;
+        }
+      } else {
+        result = checkAndAdd(result, threeDigits, number);
+      }
+      i = i - 2;
+    } else if (twoDigitsString) {
+      result = checkAndAdd(result, twoDigits, number);
+      i--;
+    } else {
+      let currentSingle = single[number[i]];
+      result = checkAndAdd(result, currentSingle, number);
+    }
   }
 
   return result;
